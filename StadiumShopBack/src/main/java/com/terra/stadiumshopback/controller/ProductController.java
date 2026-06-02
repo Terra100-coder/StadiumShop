@@ -37,19 +37,12 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDTO>> getAll() {
-        List<ProductResponseDTO> products = productService.getAllProducts()
-                .stream()
-                .map(productMapper::toResponseDTO)
-                .toList();
-
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
-        Product product = productService.getProductById(id);
-
-        return ResponseEntity.ok(productMapper.toResponseDTO(product));
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @PutMapping("/{id}")

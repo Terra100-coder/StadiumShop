@@ -35,6 +35,8 @@ public class ProductResponseDTO {
 
     private boolean active;
 
+    private boolean available;
+
     private LocalDateTime createdAt;
 
     private Long categoryId;
@@ -44,4 +46,6 @@ public class ProductResponseDTO {
     private Long teamId;
 
     private String teamName;
+
+    private List<StockSizeResponseDTO> stock;
 }
