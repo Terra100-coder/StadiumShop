@@ -1,0 +1,47 @@
+<article class="product-card h-100" [class.product-card--unavailable]="!canBePurchased">
+  <a class="product-card__image" [routerLink]="['/products', product.id]" [attr.aria-label]="'Voir ' + product.name">
+    <img
+      *ngIf="product.mainImage && !imageHasFailed; else imageFallback"
+      [src]="product.mainImage"
+      [alt]="product.name"
+      (error)="onImageError()"
+    />
+    <ng-template #imageFallback>
+      <div class="product-card__image-fallback" aria-hidden="true">
+        <i class="pi pi-image"></i>
+      </div>
+    </ng-template>
+    <span *ngIf="hasPromotion" class="product-card__promo">PROMO</span>
+    <span class="product-card__availability" [class.is-available]="product.available">
+      {{ product.available ? 'Disponible' : 'Rupture' }}
+    </span>
+  </a>
+
+  <div class="product-card__body">
+    <p class="product-card__meta">
+      <span *ngIf="product.teamName">{{ product.teamName }}</span>
+      <span *ngIf="product.teamName && product.categoryName" aria-hidden="true">·</span>
+      <span *ngIf="product.categoryName">{{ product.categoryName }}</span>
+    </p>
+    <h3 class="product-card__title">
+      <a [routerLink]="['/products', product.id]">{{ product.name }}</a>
+    </h3>
+
+    <div class="product-card__prices" *ngIf="hasPromotion; else standardPrice">
+      <span class="product-card__price product-card__price--promo">{{ product.promoPrice | currency : 'EUR' }}</span>
+      <del class="product-card__old-price">{{ product.price | currency : 'EUR' }}</del>
+    </div>
+    <ng-template #standardPrice>
+      <div class="product-card__prices">
+        <span class="product-card__price">{{ product.price | currency : 'EUR' }}</span>
+      </div>
+    </ng-template>
+
+    <div class="product-card__actions">
+      <a class="btn btn-outline-dark" [routerLink]="['/products', product.id]">Voir le produit</a>
+      <button class="btn btn-dark" type="button" [disabled]="!canBePurchased" (click)="requestAddToCart()">
+        Ajouter au panier
+      </button>
+    </div>
+  </div>
+</article>

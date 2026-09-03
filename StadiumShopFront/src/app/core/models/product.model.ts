@@ -1,6 +1,6 @@
 export interface ProductStockSize {
   size: string;
-  quantity: number;
+  quantity: number | null;
 }
 
 export interface Product {
@@ -8,13 +8,16 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  promoPrice?: number;
+  promoPrice: number | null;
   mainImage: string;
-  active: boolean;
-  personalizable: boolean;
   gallery: string[];
+  personalizable: boolean;
+  active: boolean;
   available: boolean;
+  createdAt: string | null;
+  categoryId: number;
   categoryName: string;
+  teamId: number;
   teamName: string;
-  stockSizes: ProductStockSize[];
+  stock: ProductStockSize[];
 }
