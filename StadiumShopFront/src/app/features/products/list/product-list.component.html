@@ -1,0 +1,7 @@
+<h2>Product List</h2>
+<p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+<div *ngFor="let product of products">
+  <h3>{{ product.name }}</h3>
+  <p>{{ product.price }}</p>
+  <p>{{ product.teamName }}</p>
+</div>
