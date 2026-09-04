@@ -1,0 +1,145 @@
+<section class="product-detail container py-4 py-md-5">
+  <a class="product-detail__back" routerLink="/">
+    <i class="pi pi-arrow-left" aria-hidden="true"></i>
+    Retour au catalogue
+  </a>
+
+  <div *ngIf="isLoading" class="product-detail__state" aria-live="polite">
+    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+    Chargement du produit…
+  </div>
+
+  <div *ngIf="!isLoading && errorMessage" class="product-detail__state product-detail__state--error" role="alert">
+    <p>{{ errorMessage }}</p>
+    <div class="d-flex gap-2 justify-content-center">
+      <button *ngIf="canRetry" class="btn btn-outline-danger" type="button" (click)="retry()">Réessayer</button>
+      <a class="btn btn-dark" routerLink="/">Retour au catalogue</a>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && product" class="row g-4 g-lg-5">
+    <div class="col-12 col-lg-7">
+      <div class="product-detail__image-stage">
+        <img
+          *ngIf="selectedImage && !imageHasFailed; else imageFallback"
+          [src]="selectedImage"
+          [alt]="product.name"
+          (error)="onImageError()"
+        />
+        <ng-template #imageFallback>
+          <div class="product-detail__image-fallback" aria-label="Image indisponible">
+            <i class="pi pi-image" aria-hidden="true"></i>
+            <span>Image indisponible</span>
+          </div>
+        </ng-template>
+        <span *ngIf="hasPromotion" class="product-detail__promo">PROMO</span>
+      </div>
+
+      <div *ngIf="galleryImages.length > 1" class="product-detail__thumbnails" aria-label="Galerie du produit">
+        <button
+          *ngFor="let image of galleryImages"
+          class="product-detail__thumbnail"
+          type="button"
+          [class.is-selected]="image === selectedImage"
+          [attr.aria-label]="'Afficher l’image de ' + product.name"
+          (click)="selectImage(image)"
+        >
+          <img [src]="image" alt="" />
+        </button>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+      <div class="product-detail__info">
+        <p class="product-detail__meta">
+          <span *ngIf="product.teamName">{{ product.teamName }}</span>
+          <span *ngIf="product.teamName && product.categoryName" aria-hidden="true">·</span>
+          <span *ngIf="product.categoryName">{{ product.categoryName }}</span>
+        </p>
+        <h1>{{ product.name }}</h1>
+
+        <div class="product-detail__prices" *ngIf="hasPromotion; else standardPrice">
+          <span class="product-detail__price product-detail__price--promo">{{ product.promoPrice | currency : 'EUR' }}</span>
+          <del>{{ product.price | currency : 'EUR' }}</del>
+        </div>
+        <ng-template #standardPrice>
+          <div class="product-detail__prices">
+            <span class="product-detail__price">{{ product.price | currency : 'EUR' }}</span>
+          </div>
+        </ng-template>
+
+        <p class="product-detail__description">{{ product.description }}</p>
+        <p class="product-detail__availability" [class.is-available]="product.available && product.active">
+          {{ product.active && product.available ? 'Disponible' : 'Indisponible' }}
+        </p>
+
+        <section class="product-detail__selection" aria-labelledby="size-heading">
+          <div class="d-flex justify-content-between align-items-baseline gap-2">
+            <h2 id="size-heading">Choisir une taille</h2>
+            <span *ngIf="selectedSize" class="product-detail__selected-size">Taille {{ selectedSize }}</span>
+          </div>
+          <div class="product-detail__sizes">
+            <button
+              *ngFor="let stock of product.stock"
+              class="product-detail__size"
+              type="button"
+              [class.is-selected]="stock.size === selectedSize"
+              [disabled]="stock.quantity === null || stock.quantity <= 0"
+              (click)="selectSize(stock)"
+            >
+              {{ stock.size }}
+            </button>
+          </div>
+          <p *ngIf="product.stock.length === 0" class="product-detail__hint">Aucune taille n’est disponible pour ce produit.</p>
+          <p *ngIf="!selectedSize" class="product-detail__hint">Sélectionnez une taille disponible pour continuer.</p>
+        </section>
+
+        <section class="product-detail__selection" aria-labelledby="quantity-heading">
+          <h2 id="quantity-heading">Quantité</h2>
+          <div class="product-detail__quantity">
+            <button type="button" aria-label="Diminuer la quantité" [disabled]="quantity <= 1 || !selectedSize" (click)="decreaseQuantity()">−</button>
+            <input
+              type="number"
+              min="1"
+              [max]="maxQuantity"
+              [value]="quantity"
+              [disabled]="!selectedSize"
+              aria-label="Quantité"
+              (input)="updateQuantity($event)"
+            />
+            <button type="button" aria-label="Augmenter la quantité" [disabled]="quantity >= maxQuantity || !selectedSize" (click)="increaseQuantity()">+</button>
+          </div>
+          <p *ngIf="selectedSize" class="product-detail__hint">{{ maxQuantity }} en stock pour cette taille.</p>
+          <p *ngIf="selectedSize && (quantity < 1 || quantity > maxQuantity)" class="product-detail__hint product-detail__hint--error">
+            Choisissez une quantité valide.
+          </p>
+        </section>
+
+        <section *ngIf="product.personalizable" class="product-detail__personalization">
+          <div class="form-check mb-3">
+            <input id="personalization" class="form-check-input" type="checkbox" [checked]="personalizationEnabled" (change)="togglePersonalization($event)" />
+            <label class="form-check-label fw-semibold" for="personalization">Personnaliser mon maillot</label>
+          </div>
+          <div *ngIf="personalizationEnabled">
+            <h2 id="personalization-heading">Votre personnalisation</h2>
+            <div class="row g-3">
+              <div class="col-12 col-sm-7">
+                <label class="form-label" for="personalization-name">Nom</label>
+                <input id="personalization-name" class="form-control" type="text" [value]="personalizationName" (input)="updatePersonalizationName($event)" />
+              </div>
+              <div class="col-12 col-sm-5">
+                <label class="form-label" for="personalization-number">Numéro</label>
+                <input id="personalization-number" class="form-control" type="text" inputmode="numeric" [value]="personalizationNumber" (input)="updatePersonalizationNumber($event)" />
+              </div>
+            </div>
+            <p *ngIf="!isPersonalizationValid" class="product-detail__hint product-detail__hint--error">Saisissez un nom et un numéro valide.</p>
+          </div>
+        </section>
+
+        <button class="btn btn-dark product-detail__add-button" type="button" [disabled]="!canAddToCart" (click)="prepareAddToCart()">
+          Ajouter au panier
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
