@@ -139,6 +139,10 @@
         <button class="btn btn-dark product-detail__add-button" type="button" [disabled]="!canAddToCart" (click)="prepareAddToCart()">
           Ajouter au panier
         </button>
+        <p *ngIf="cartFeedbackMessage" class="product-detail__cart-feedback" role="status">
+          {{ cartFeedbackMessage }}
+          <a *ngIf="canAddToCart" routerLink="/cart">Voir le panier</a>
+        </p>
       </div>
     </div>
   </div>

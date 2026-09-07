@@ -1,20 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { Product, ProductStockSize } from '../../../core/models/product.model';
+import { CartService } from '../../../core/services/cart.service';
 import { ProductService } from '../../../core/services/product.service';
-
-export interface ProductCartPreparation {
-  productId: number;
-  size: string;
-  quantity: number;
-  personalizationName: string | null;
-  personalizationNumber: string | null;
-  price: number;
-  image: string;
-  name: string;
-}
 
 @Component({
   selector: 'app-product-detail',
@@ -34,14 +24,14 @@ export class ProductDetailComponent implements OnInit {
   isLoading = true;
   errorMessage = '';
   imageHasFailed = false;
+  cartFeedbackMessage = '';
 
   private productId: number | null = null;
 
-  @Output() addToCart = new EventEmitter<ProductCartPreparation>();
-
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly productService: ProductService
+    private readonly productService: ProductService,
+    private readonly cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -163,7 +153,7 @@ export class ProductDetailComponent implements OnInit {
       return;
     }
 
-    this.addToCart.emit({
+    const wasAdded = this.cartService.addItem({
       productId: this.product.id,
       size: this.selectedSize,
       quantity: this.quantity,
@@ -172,7 +162,12 @@ export class ProductDetailComponent implements OnInit {
       price: this.product.promoPrice ?? this.product.price,
       image: this.product.mainImage,
       name: this.product.name,
+      maxQuantity: this.maxQuantity,
     });
+
+    this.cartFeedbackMessage = wasAdded
+      ? 'Produit ajouté au panier.'
+      : 'Impossible d’ajouter ce produit au panier.';
   }
 
   onImageError(): void {
@@ -185,6 +180,7 @@ export class ProductDetailComponent implements OnInit {
     this.product = null;
     this.selectedSize = null;
     this.quantity = 1;
+    this.cartFeedbackMessage = '';
 
     this.productService.getProduct(productId).subscribe({
       next: (product) => {

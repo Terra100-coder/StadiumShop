@@ -267,6 +267,18 @@
   font-weight: 800;
 }
 
+.product-detail__cart-feedback {
+  margin: 0.75rem 0 0;
+  color: #16803c;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.product-detail__cart-feedback a {
+  margin-left: 0.35rem;
+  color: inherit;
+}
+
 @media (max-width: 575.98px) {
   .product-detail__thumbnails {
     gap: 0.5rem;

@@ -1,0 +1,54 @@
+<section class="cart-page container py-4 py-md-5">
+  <header class="cart-page__header">
+    <p class="cart-page__eyebrow">Stadium Shop</p>
+    <h1>Votre panier</h1>
+  </header>
+
+  <p *ngIf="feedbackMessage" class="cart-page__feedback" role="status">{{ feedbackMessage }}</p>
+
+  <div *ngIf="cart.isEmpty(); else cartContent" class="cart-page__empty">
+    <i class="pi pi-shopping-bag" aria-hidden="true"></i>
+    <h2>Votre panier est vide</h2>
+    <p>Découvrez les maillots et équipements de notre sélection.</p>
+    <a class="btn btn-dark" routerLink="/">Voir le catalogue</a>
+  </div>
+
+  <ng-template #cartContent>
+    <div class="row g-4 align-items-start">
+      <div class="col-12 col-lg-8">
+        <article *ngFor="let item of cart.items()" class="cart-line">
+          <div class="cart-line__image">
+            <img *ngIf="item.image" [src]="item.image" [alt]="item.name" />
+            <i *ngIf="!item.image" class="pi pi-image" aria-label="Image indisponible"></i>
+          </div>
+          <div class="cart-line__details">
+            <h2>{{ item.name }}</h2>
+            <p>Taille : <strong>{{ item.size }}</strong></p>
+            <p *ngIf="item.personalizationName">Personnalisation : {{ item.personalizationName }}<span *ngIf="item.personalizationNumber"> · {{ item.personalizationNumber }}</span></p>
+            <span class="cart-line__price">{{ item.price | currency : 'EUR' }}</span>
+          </div>
+          <div class="cart-line__actions">
+            <div class="cart-line__quantity" aria-label="Quantité">
+              <button type="button" aria-label="Diminuer la quantité" [disabled]="item.quantity <= 1" (click)="decreaseQuantity(item)">−</button>
+              <span>{{ item.quantity }}</span>
+              <button type="button" aria-label="Augmenter la quantité" [disabled]="item.quantity >= item.maxQuantity" (click)="increaseQuantity(item)">+</button>
+            </div>
+            <strong class="cart-line__subtotal">{{ item.price * item.quantity | currency : 'EUR' }}</strong>
+            <button class="cart-line__remove" type="button" (click)="removeItem(item)">Supprimer</button>
+          </div>
+        </article>
+      </div>
+
+      <aside class="col-12 col-lg-4">
+        <div class="cart-summary">
+          <h2>Récapitulatif</h2>
+          <p><span>Articles</span><strong>{{ cart.totalQuantity() }}</strong></p>
+          <p><span>Sous-total</span><strong>{{ cart.subtotal() | currency : 'EUR' }}</strong></p>
+          <p class="cart-summary__total"><span>Total</span><strong>{{ cart.subtotal() | currency : 'EUR' }}</strong></p>
+          <a class="btn btn-dark w-100" routerLink="/checkout">Passer la commande</a>
+          <button class="btn btn-link w-100 mt-2" type="button" (click)="clearCart()">Vider le panier</button>
+        </div>
+      </aside>
+    </div>
+  </ng-template>
+</section>

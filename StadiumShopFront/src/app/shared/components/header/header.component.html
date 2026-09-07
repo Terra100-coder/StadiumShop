@@ -1,0 +1,13 @@
+<header class="site-header">
+  <div class="container site-header__content">
+    <a class="site-header__brand" routerLink="/">STADIUM <span>SHOP</span></a>
+    <nav aria-label="Navigation principale">
+      <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">Catalogue</a>
+      <a class="site-header__cart" routerLink="/cart" routerLinkActive="is-active" aria-label="Voir le panier">
+        <i class="pi pi-shopping-bag" aria-hidden="true"></i>
+        <span>Panier</span>
+        <span *ngIf="cart.totalQuantity() > 0" class="site-header__cart-count">{{ cart.totalQuantity() }}</span>
+      </a>
+    </nav>
+  </div>
+</header>
