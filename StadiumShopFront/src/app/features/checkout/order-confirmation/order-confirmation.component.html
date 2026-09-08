@@ -1,0 +1,22 @@
+<section class="order-confirmation container py-4 py-md-5">
+  <div *ngIf="order; else noConfirmation" class="order-confirmation__card">
+    <i class="pi pi-check-circle" aria-hidden="true"></i>
+    <p class="order-confirmation__eyebrow">Commande enregistrée</p>
+    <h1>Merci pour votre commande.</h1>
+    <p>Votre commande <strong>#{{ order.orderId }}</strong> a été créée avec le statut <strong>{{ order.status }}</strong>.</p>
+    <div class="order-confirmation__total">
+      <span>Total de la commande</span>
+      <strong>{{ order.totalPrice | currency : 'EUR' }}</strong>
+    </div>
+    <a class="btn btn-dark" routerLink="/">Retour au catalogue</a>
+  </div>
+
+  <ng-template #noConfirmation>
+    <div class="order-confirmation__card">
+      <i class="pi pi-info-circle" aria-hidden="true"></i>
+      <h1>Aucune commande à confirmer</h1>
+      <p>Créez une commande depuis le checkout pour accéder à cette page.</p>
+      <a class="btn btn-dark" routerLink="/">Retour au catalogue</a>
+    </div>
+  </ng-template>
+</section>

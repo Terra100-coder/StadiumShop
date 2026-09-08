@@ -1,0 +1,91 @@
+<section class="checkout-page container py-4 py-md-5">
+  <header class="checkout-page__header">
+    <p class="checkout-page__eyebrow">Stadium Shop</p>
+    <h1>Finaliser la commande</h1>
+  </header>
+
+  <div *ngIf="cart.isEmpty(); else checkoutContent" class="checkout-page__empty">
+    <i class="pi pi-shopping-bag" aria-hidden="true"></i>
+    <h2>Votre panier est vide</h2>
+    <p>Ajoutez des produits avant de finaliser votre commande.</p>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+      <a class="btn btn-dark" routerLink="/">Voir le catalogue</a>
+      <a class="btn btn-outline-dark" routerLink="/cart">Retour au panier</a>
+    </div>
+  </div>
+
+  <ng-template #checkoutContent>
+    <form [formGroup]="checkoutForm" (ngSubmit)="submit()" novalidate>
+      <div class="row g-4 align-items-start">
+        <div class="col-12 col-lg-7">
+          <section class="checkout-form">
+            <h2>Vos informations</h2>
+            <p class="checkout-form__intro">Les champs marqués d’un astérisque sont obligatoires.</p>
+
+            <div *ngIf="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+
+            <div class="mb-3">
+              <label class="form-label" for="customer-name">Nom complet *</label>
+              <input id="customer-name" class="form-control" [class.is-invalid]="isInvalid('customerName')" type="text" formControlName="customerName" autocomplete="name" />
+              <div class="invalid-feedback">Saisissez votre nom complet.</div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="phone">Téléphone *</label>
+                <input id="phone" class="form-control" [class.is-invalid]="isInvalid('phone')" type="tel" formControlName="phone" autocomplete="tel" />
+                <div class="invalid-feedback">Saisissez un numéro de téléphone valide.</div>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="email">E-mail</label>
+                <input id="email" class="form-control" [class.is-invalid]="isInvalid('email')" type="email" formControlName="email" autocomplete="email" />
+                <div class="invalid-feedback">Saisissez une adresse e-mail valide.</div>
+              </div>
+            </div>
+
+            <div class="mb-3 mt-3">
+              <label class="form-label" for="address">Adresse *</label>
+              <input id="address" class="form-control" [class.is-invalid]="isInvalid('address')" type="text" formControlName="address" autocomplete="street-address" />
+              <div class="invalid-feedback">Saisissez votre adresse.</div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label" for="city">Ville *</label>
+              <input id="city" class="form-control" [class.is-invalid]="isInvalid('city')" type="text" formControlName="city" autocomplete="address-level2" />
+              <div class="invalid-feedback">Saisissez votre ville.</div>
+            </div>
+
+            <button class="btn btn-dark checkout-form__submit" type="submit" [disabled]="checkoutForm.invalid || cart.isEmpty() || isSubmitting">
+              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+              {{ isSubmitting ? 'Commande en cours…' : 'Confirmer la commande' }}
+            </button>
+          </section>
+        </div>
+
+        <aside class="col-12 col-lg-5">
+          <section class="checkout-summary">
+            <h2>Récapitulatif</h2>
+            <article *ngFor="let item of cart.items()" class="checkout-summary__line">
+              <div class="checkout-summary__image">
+                <img *ngIf="item.image" [src]="item.image" [alt]="item.name" />
+                <i *ngIf="!item.image" class="pi pi-image" aria-label="Image indisponible"></i>
+              </div>
+              <div>
+                <h3>{{ item.name }}</h3>
+                <p>Taille {{ item.size }} · Qté {{ item.quantity }}</p>
+                <p *ngIf="item.personalizationName">{{ item.personalizationName }}<span *ngIf="item.personalizationNumber"> · {{ item.personalizationNumber }}</span></p>
+                <strong>{{ item.price * item.quantity | currency : 'EUR' }}</strong>
+              </div>
+            </article>
+            <div class="checkout-summary__totals">
+              <p><span>Articles</span><strong>{{ cart.totalQuantity() }}</strong></p>
+              <p><span>Sous-total</span><strong>{{ cart.subtotal() | currency : 'EUR' }}</strong></p>
+              <p class="checkout-summary__total"><span>Total</span><strong>{{ cart.subtotal() | currency : 'EUR' }}</strong></p>
+            </div>
+            <a class="checkout-summary__back" routerLink="/cart">Modifier le panier</a>
+          </section>
+        </aside>
+      </div>
+    </form>
+  </ng-template>
+</section>
