@@ -1,6 +1,20 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then(
+        (component) => component.LoginComponent
+      ),
+  },
+  {
+    path: 'admin',
+    canMatch: [adminGuard],
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
   {
     path: 'order-confirmation',
     loadComponent: () =>

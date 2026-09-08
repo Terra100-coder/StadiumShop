@@ -1,0 +1,30 @@
+<section class="login-page container py-4 py-md-5">
+  <div class="login-page__card">
+    <p class="login-page__eyebrow">Stadium Shop</p>
+    <h1>Connexion</h1>
+    <p class="login-page__intro">Accédez à votre espace Stadium Shop.</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" novalidate>
+      <div *ngIf="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+
+      <div class="mb-3">
+        <label class="form-label" for="email">E-mail</label>
+        <input id="email" class="form-control" [class.is-invalid]="isInvalid('email')" type="email" formControlName="email" autocomplete="email" />
+        <div class="invalid-feedback">Saisissez une adresse e-mail valide.</div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label" for="password">Mot de passe</label>
+        <input id="password" class="form-control" [class.is-invalid]="isInvalid('password')" type="password" formControlName="password" autocomplete="current-password" />
+        <div class="invalid-feedback">Saisissez votre mot de passe.</div>
+      </div>
+
+      <button class="btn btn-dark login-page__submit" type="submit" [disabled]="loginForm.invalid || isSubmitting">
+        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+        {{ isSubmitting ? 'Connexion en cours…' : 'Se connecter' }}
+      </button>
+    </form>
+
+    <a class="login-page__back" routerLink="/">Retour au catalogue</a>
+  </div>
+</section>

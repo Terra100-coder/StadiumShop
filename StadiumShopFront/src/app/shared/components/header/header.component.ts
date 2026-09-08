@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { CartService } from '../../../core/services/cart.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -13,4 +14,11 @@ import { CartService } from '../../../core/services/cart.service';
 })
 export class HeaderComponent {
   readonly cart = inject(CartService);
+  readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
+  logout(): void {
+    this.auth.logout();
+    void this.router.navigate(['/']);
+  }
 }

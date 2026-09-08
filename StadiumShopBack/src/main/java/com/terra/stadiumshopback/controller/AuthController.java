@@ -42,7 +42,7 @@ public class AuthController {
                 user.getPassword(),
                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
         );
-        String token = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(userDetails, user.getRole());
 
         return ResponseEntity.ok(AuthResponseDTO.builder().token(token).build());
     }

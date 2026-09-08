@@ -1,0 +1,55 @@
+.login-page {
+  display: grid;
+  min-height: calc(100vh - 4.5rem);
+  place-items: center;
+}
+
+.login-page__card {
+  width: min(100%, 28rem);
+  padding: clamp(1.75rem, 6vw, 3rem);
+  border: 1px solid #e5e5e5;
+  border-radius: 0.85rem;
+  background: #fff;
+  box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 7%);
+}
+
+.login-page__eyebrow {
+  margin-bottom: 0.5rem;
+  color: #c8102e;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.login-page h1 {
+  margin-bottom: 0.5rem;
+  color: #151515;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.login-page__intro {
+  margin-bottom: 1.75rem;
+  color: #666;
+}
+
+.login-page .form-label {
+  color: #222;
+  font-weight: 700;
+}
+
+.login-page__submit {
+  width: 100%;
+  padding: 0.8rem;
+  font-weight: 800;
+}
+
+.login-page__back {
+  display: block;
+  margin-top: 1.25rem;
+  color: #444;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+}

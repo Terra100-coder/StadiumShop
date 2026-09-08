@@ -29,7 +29,11 @@
   gap: 1.25rem;
 }
 
-.site-header nav a {
+.site-header nav a,
+.site-header__logout {
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: #333;
   font-size: 0.9rem;
   font-weight: 700;
@@ -37,6 +41,7 @@
 }
 
 .site-header nav a:hover,
+.site-header__logout:hover,
 .site-header nav a.is-active {
   color: #c8102e;
 }
@@ -56,6 +61,15 @@
   background: #151515;
   color: #fff;
   font-size: 0.7rem;
+}
+
+.site-header__user {
+  max-width: 11rem;
+  overflow: hidden;
+  color: #555;
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (max-width: 420px) {

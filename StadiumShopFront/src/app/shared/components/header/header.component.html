@@ -8,6 +8,10 @@
         <span>Panier</span>
         <span *ngIf="cart.totalQuantity() > 0" class="site-header__cart-count">{{ cart.totalQuantity() }}</span>
       </a>
+      <a *ngIf="!auth.isAuthenticated()" routerLink="/login" routerLinkActive="is-active">Connexion</a>
+      <span *ngIf="auth.isAuthenticated()" class="site-header__user">{{ auth.user()?.email }}</span>
+      <a *ngIf="auth.isAdmin()" routerLink="/admin">Administration</a>
+      <button *ngIf="auth.isAuthenticated()" class="site-header__logout" type="button" (click)="logout()">Déconnexion</button>
     </nav>
   </div>
 </header>
