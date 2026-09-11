@@ -1,0 +1,25 @@
+.admin-section {
+  min-height: 100%;
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.admin-section__eyebrow {
+  margin-bottom: 0.5rem;
+  color: #c8102e;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-section h1 {
+  margin-bottom: 0.75rem;
+  color: #151515;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+}
+
+.admin-section p:not(.admin-section__eyebrow) {
+  max-width: 38rem;
+  color: #666;
+}

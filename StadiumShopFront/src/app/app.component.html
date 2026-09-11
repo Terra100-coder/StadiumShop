@@ -1,2 +1,2 @@
-<app-header />
+<app-header *ngIf="!isAdminRoute()" />
 <router-outlet />

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from './core/guards/admin.guard';
+import { adminChildGuard, adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -12,8 +12,54 @@ export const routes: Routes = [
   {
     path: 'admin',
     canMatch: [adminGuard],
-    redirectTo: '/',
-    pathMatch: 'full',
+    canActivateChild: [adminChildGuard],
+    loadComponent: () =>
+      import('./features/admin/layout/admin-layout.component').then(
+        (component) => component.AdminLayoutComponent
+      ),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('./features/admin/section-placeholder/admin-section-placeholder.component').then(
+            (component) => component.AdminSectionPlaceholderComponent
+          ),
+        data: { title: 'Espace d’administration' },
+      },
+      {
+        path: 'products',
+        loadComponent: () =>
+          import('./features/admin/section-placeholder/admin-section-placeholder.component').then(
+            (component) => component.AdminSectionPlaceholderComponent
+          ),
+        data: { title: 'Produits' },
+      },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./features/admin/section-placeholder/admin-section-placeholder.component').then(
+            (component) => component.AdminSectionPlaceholderComponent
+          ),
+        data: { title: 'Commandes' },
+      },
+      {
+        path: 'categories',
+        loadComponent: () =>
+          import('./features/admin/section-placeholder/admin-section-placeholder.component').then(
+            (component) => component.AdminSectionPlaceholderComponent
+          ),
+        data: { title: 'Catégories' },
+      },
+      {
+        path: 'teams',
+        loadComponent: () =>
+          import('./features/admin/section-placeholder/admin-section-placeholder.component').then(
+            (component) => component.AdminSectionPlaceholderComponent
+          ),
+        data: { title: 'Équipes' },
+      },
+    ],
   },
   {
     path: 'order-confirmation',

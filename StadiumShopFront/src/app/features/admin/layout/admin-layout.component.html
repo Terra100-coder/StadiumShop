@@ -1,0 +1,42 @@
+<div class="admin-layout" [class.admin-layout--sidebar-open]="isSidebarOpen">
+  <header class="admin-layout__header">
+    <button class="admin-layout__menu-toggle" type="button" aria-label="Ouvrir la navigation" [attr.aria-expanded]="isSidebarOpen" (click)="isSidebarOpen = !isSidebarOpen">
+      <i class="pi pi-bars" aria-hidden="true"></i>
+    </button>
+    <a class="admin-layout__brand" routerLink="/admin" (click)="closeSidebar()">STADIUM <span>ADMIN</span></a>
+    <div class="admin-layout__profile">
+      <span class="admin-layout__role">ADMIN</span>
+      <span class="admin-layout__email">{{ auth.user()?.email }}</span>
+      <button class="admin-layout__logout" type="button" (click)="logout()">Déconnexion</button>
+    </div>
+  </header>
+
+  <aside class="admin-layout__sidebar" aria-label="Navigation administrative">
+    <nav>
+      <a routerLink="/admin" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()">
+        <i class="pi pi-home" aria-hidden="true"></i> Tableau de bord
+      </a>
+      <a routerLink="/admin/products" routerLinkActive="is-active" (click)="closeSidebar()">
+        <i class="pi pi-box" aria-hidden="true"></i> Produits
+      </a>
+      <a routerLink="/admin/orders" routerLinkActive="is-active" (click)="closeSidebar()">
+        <i class="pi pi-shopping-cart" aria-hidden="true"></i> Commandes
+      </a>
+      <a routerLink="/admin/categories" routerLinkActive="is-active" (click)="closeSidebar()">
+        <i class="pi pi-tags" aria-hidden="true"></i> Catégories
+      </a>
+      <a routerLink="/admin/teams" routerLinkActive="is-active" (click)="closeSidebar()">
+        <i class="pi pi-users" aria-hidden="true"></i> Équipes
+      </a>
+    </nav>
+    <a class="admin-layout__shop-link" routerLink="/" (click)="closeSidebar()">
+      <i class="pi pi-arrow-left" aria-hidden="true"></i> Voir la boutique
+    </a>
+  </aside>
+
+  <button *ngIf="isSidebarOpen" class="admin-layout__overlay" type="button" aria-label="Fermer la navigation" (click)="closeSidebar()"></button>
+
+  <main class="admin-layout__content">
+    <router-outlet />
+  </main>
+</div>
