@@ -1,0 +1,210 @@
+.admin-dashboard {
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.admin-dashboard__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-dashboard__eyebrow {
+  margin-bottom: 0.4rem;
+  color: #c8102e;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-dashboard h1,
+.admin-dashboard h2 {
+  color: #151515;
+  font-weight: 800;
+}
+
+.admin-dashboard h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.admin-dashboard__header p:not(.admin-dashboard__eyebrow) {
+  margin: 0;
+  color: #666;
+}
+
+.admin-dashboard__kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-kpi {
+  min-height: 13.5rem;
+  padding: 1.25rem;
+  border: 1px solid #e1e1e1;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 0.3rem 1rem rgb(0 0 0 / 4%);
+}
+
+.admin-kpi__icon {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 1.25rem;
+  place-items: center;
+  border-radius: 0.5rem;
+  background: #f4e8eb;
+  color: #a6001f;
+}
+
+.admin-kpi p {
+  margin-bottom: 0.35rem;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.admin-kpi strong {
+  display: block;
+  margin-bottom: 1.25rem;
+  color: #151515;
+  font-size: clamp(1.6rem, 2.5vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.admin-kpi a {
+  color: #333;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.admin-kpi--attention .admin-kpi__icon {
+  background: #fff3d7;
+  color: #8a5b00;
+}
+
+.admin-kpi--revenue .admin-kpi__icon {
+  background: #e4f4e9;
+  color: #16803c;
+}
+
+.admin-kpi--revenue small {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.admin-dashboard__quick-actions {
+  margin-top: 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid #e1e1e1;
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.admin-dashboard__quick-actions h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1.25rem;
+}
+
+.admin-dashboard__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.admin-dashboard__actions .btn {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.admin-dashboard__error {
+  display: flex;
+  min-height: 18rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border: 1px solid #f0c8cf;
+  border-radius: 0.75rem;
+  background: #fff8f8;
+  text-align: center;
+}
+
+.admin-dashboard__error > i {
+  margin-bottom: 0.75rem;
+  color: #c8102e;
+  font-size: 2.25rem;
+}
+
+.admin-dashboard__error h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.admin-dashboard__error p {
+  margin-bottom: 1.25rem;
+  color: #666;
+}
+
+.admin-kpi--skeleton {
+  overflow: hidden;
+  background: linear-gradient(110deg, #f4f4f4 8%, #fafafa 18%, #f4f4f4 33%);
+  background-size: 200% 100%;
+  animation: admin-dashboard-shimmer 1.4s linear infinite;
+}
+
+.admin-kpi--skeleton span,
+.admin-kpi--skeleton strong,
+.admin-kpi--skeleton small {
+  display: block;
+  border-radius: 0.25rem;
+  background: #e9e9e9;
+}
+
+.admin-kpi--skeleton span {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-kpi--skeleton strong {
+  width: 55%;
+  height: 2rem;
+  margin-bottom: 1.4rem;
+}
+
+.admin-kpi--skeleton small {
+  width: 75%;
+  height: 0.85rem;
+}
+
+@keyframes admin-dashboard-shimmer {
+  to { background-position-x: -200%; }
+}
+
+@media (max-width: 1199.98px) {
+  .admin-dashboard__kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575.98px) {
+  .admin-dashboard__header {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .admin-dashboard__kpis {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-dashboard__actions {
+    display: grid;
+  }
+}

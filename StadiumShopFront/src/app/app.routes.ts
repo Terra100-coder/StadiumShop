@@ -22,10 +22,9 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         loadComponent: () =>
-          import('./features/admin/section-placeholder/admin-section-placeholder.component').then(
-            (component) => component.AdminSectionPlaceholderComponent
+          import('./features/admin/dashboard/admin-dashboard.component').then(
+            (component) => component.AdminDashboardComponent
           ),
-        data: { title: 'Espace d’administration' },
       },
       {
         path: 'products',

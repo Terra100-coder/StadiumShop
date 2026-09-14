@@ -1,0 +1,66 @@
+<section class="admin-dashboard">
+  <header class="admin-dashboard__header">
+    <div>
+      <p class="admin-dashboard__eyebrow">Administration</p>
+      <h1>Tableau de bord</h1>
+      <p>Une vue d’ensemble de l’activité de Stadium Shop.</p>
+    </div>
+    <a class="btn btn-outline-dark" routerLink="/admin/orders">Voir les commandes</a>
+  </header>
+
+  <div *ngIf="isLoading" class="admin-dashboard__kpis" aria-label="Chargement des indicateurs">
+    <div *ngFor="let item of [1, 2, 3, 4]" class="admin-kpi admin-kpi--skeleton" aria-hidden="true">
+      <span></span><strong></strong><small></small>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && errorMessage" class="admin-dashboard__error" role="alert">
+    <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+    <h2>Les données sont indisponibles</h2>
+    <p>{{ errorMessage }}</p>
+    <button class="btn btn-dark" type="button" (click)="loadDashboard()">Réessayer</button>
+  </div>
+
+  <ng-container *ngIf="!isLoading && dashboard">
+    <div class="admin-dashboard__kpis">
+      <article class="admin-kpi">
+        <div class="admin-kpi__icon"><i class="pi pi-box" aria-hidden="true"></i></div>
+        <p>Produits</p>
+        <strong>{{ dashboard.totalProducts }}</strong>
+        <a routerLink="/admin/products">Gérer les produits <i class="pi pi-arrow-right" aria-hidden="true"></i></a>
+      </article>
+      <article class="admin-kpi">
+        <div class="admin-kpi__icon"><i class="pi pi-shopping-cart" aria-hidden="true"></i></div>
+        <p>Commandes</p>
+        <strong>{{ dashboard.totalOrders }}</strong>
+        <a routerLink="/admin/orders">Voir les commandes <i class="pi pi-arrow-right" aria-hidden="true"></i></a>
+      </article>
+      <article class="admin-kpi admin-kpi--attention">
+        <div class="admin-kpi__icon"><i class="pi pi-clock" aria-hidden="true"></i></div>
+        <p>En attente</p>
+        <strong>{{ dashboard.pendingOrders }}</strong>
+        <a routerLink="/admin/orders">Traiter les commandes <i class="pi pi-arrow-right" aria-hidden="true"></i></a>
+      </article>
+      <article class="admin-kpi admin-kpi--revenue">
+        <div class="admin-kpi__icon"><i class="pi pi-wallet" aria-hidden="true"></i></div>
+        <p>Chiffre d’affaires</p>
+        <strong>{{ formatRevenue(dashboard.totalRevenue) }}</strong>
+        <small>Commandes confirmées et finalisées</small>
+      </article>
+    </div>
+
+    <section class="admin-dashboard__quick-actions" aria-labelledby="quick-actions-title">
+      <div>
+        <p class="admin-dashboard__eyebrow">Accès direct</p>
+        <h2 id="quick-actions-title">Actions rapides</h2>
+      </div>
+      <div class="admin-dashboard__actions">
+        <a class="btn btn-dark" routerLink="/admin/products"><i class="pi pi-plus" aria-hidden="true"></i> Ajouter un produit</a>
+        <a class="btn btn-outline-dark" routerLink="/admin/orders">Voir les commandes</a>
+        <a class="btn btn-outline-dark" routerLink="/admin/products">Gérer les produits</a>
+        <a class="btn btn-outline-dark" routerLink="/admin/categories">Gérer les catégories</a>
+        <a class="btn btn-outline-dark" routerLink="/admin/teams">Gérer les équipes</a>
+      </div>
+    </section>
+  </ng-container>
+</section>
