@@ -29,10 +29,9 @@ export const routes: Routes = [
       {
         path: 'products',
         loadComponent: () =>
-          import('./features/admin/section-placeholder/admin-section-placeholder.component').then(
-            (component) => component.AdminSectionPlaceholderComponent
+          import('./features/admin/products/admin-products.component').then(
+            (component) => component.AdminProductsComponent
           ),
-        data: { title: 'Produits' },
       },
       {
         path: 'orders',
