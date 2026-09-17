@@ -12,4 +12,6 @@ public interface StockSizeRepository extends JpaRepository<StockSize, Long> {
     List<StockSize> findByProductId(Long productId);
 
     Optional<StockSize> findByProductIdAndSize(Long productId, Size size);
+
+    long deleteByProductId(Long productId);
 }

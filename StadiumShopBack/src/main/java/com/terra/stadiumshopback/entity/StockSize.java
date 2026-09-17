@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "stock_sizes")
+@Table(
+        name = "stock_sizes",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_stock_sizes_product_size",
+                columnNames = {"product_id", "size"}
+        )
+)
 @Getter
 @Setter
 @NoArgsConstructor
