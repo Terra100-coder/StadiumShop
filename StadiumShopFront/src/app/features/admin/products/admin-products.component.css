@@ -105,7 +105,7 @@
 }
 
 .admin-products table {
-  min-width: 58rem;
+  min-width: 69rem;
 }
 
 .admin-products thead th {
@@ -152,6 +152,25 @@
 
 .admin-products__promo-price {
   color: #c8102e;
+}
+
+.admin-products__feedback {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-products__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  min-width: 11.5rem;
+}
+
+.admin-products__actions .spinner-border,
+.admin-products__modal-actions .spinner-border {
+  margin-right: 0.35rem;
 }
 
 .admin-badge {
@@ -246,6 +265,83 @@
 
 @keyframes admin-products-shimmer {
   to { background-position-x: -200%; }
+}
+
+.admin-products__modal-backdrop {
+  position: fixed;
+  z-index: 1050;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(0 0 0 / 48%);
+}
+
+.admin-products__modal {
+  width: min(100%, 31rem);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 22%);
+}
+
+.admin-products__modal h2 {
+  margin-bottom: 0.65rem;
+  font-size: 1.3rem;
+}
+
+.admin-products__modal > p {
+  color: #555;
+}
+
+.admin-products__modal--stock {
+  width: min(100%, 38rem);
+}
+
+.admin-products__modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1.35rem;
+}
+
+.admin-products__modal-error,
+.admin-products__field-help {
+  margin: 1rem 0 0;
+  color: #a10825 !important;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.admin-products__stock-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+}
+
+.admin-products__stock-field {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.75rem;
+  border: 1px solid #dedede;
+  border-radius: 0.5rem;
+  background: #fafafa;
+  font-weight: 800;
+}
+
+.admin-products__stock-field input {
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid #bdbdbd;
+  border-radius: 0.35rem;
+  font-weight: 600;
+}
+
+.admin-products__stock-field small {
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 @media (max-width: 767.98px) {

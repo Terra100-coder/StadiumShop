@@ -8,6 +8,16 @@
     <span *ngIf="!isLoading && !errorMessage" class="admin-products__count">{{ products.length }} produit{{ products.length > 1 ? 's' : '' }}</span>
   </header>
 
+  <div *ngIf="actionFeedbackMessage" class="alert alert-success admin-products__feedback" role="status">
+    <i class="pi pi-check-circle" aria-hidden="true"></i>
+    {{ actionFeedbackMessage }}
+  </div>
+
+  <div *ngIf="actionErrorMessage" class="alert alert-danger admin-products__feedback" role="alert">
+    <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+    {{ actionErrorMessage }}
+  </div>
+
   <div *ngIf="isLoading" class="admin-products__skeleton" aria-label="Chargement des produits">
     <div class="admin-products__skeleton-toolbar"></div>
     <div *ngFor="let row of [1, 2, 3, 4, 5]" class="admin-products__skeleton-row"><span></span><span></span><span></span><span></span></div>
@@ -57,6 +67,7 @@
             <th scope="col">Statut</th>
             <th scope="col">Disponibilité</th>
             <th scope="col">Créé le</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -83,9 +94,59 @@
             <td><span class="admin-badge" [class.admin-badge--inactive]="!product.active">{{ product.active ? 'Actif' : 'Inactif' }}</span></td>
             <td><span class="admin-badge admin-badge--availability" [class.admin-badge--unavailable]="!product.available">{{ product.available ? 'Disponible' : 'Indisponible' }}</span></td>
             <td>{{ product.createdAt ? (product.createdAt | date : 'dd/MM/yyyy') : '—' }}</td>
+            <td>
+              <div class="admin-products__actions">
+                <button class="btn btn-sm" type="button" [class.btn-outline-success]="!product.active" [class.btn-outline-secondary]="product.active" [disabled]="isStatusActionPending(product)" (click)="requestStatusChange(product)">
+                  <span *ngIf="isStatusActionPending(product)" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  {{ product.active ? 'Désactiver' : 'Activer' }}
+                </button>
+                <button class="btn btn-sm btn-outline-dark" type="button" (click)="openStockModal(product)">Modifier le stock</button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
   </ng-container>
 </section>
+
+<div *ngIf="statusConfirmation as confirmation" class="admin-products__modal-backdrop" role="presentation">
+  <section class="admin-products__modal" role="dialog" aria-modal="true" aria-labelledby="status-confirmation-title">
+    <h2 id="status-confirmation-title">Confirmer l’action</h2>
+    <p>Voulez-vous vraiment {{ confirmation.action === 'activate' ? 'activer' : 'désactiver' }} le produit « {{ confirmation.product.name }} » ?</p>
+    <p *ngIf="confirmationErrorMessage" class="admin-products__modal-error" role="alert">{{ confirmationErrorMessage }}</p>
+    <div class="admin-products__modal-actions">
+      <button class="btn btn-outline-secondary" type="button" [disabled]="pendingStatusProductId !== null" (click)="closeStatusConfirmation()">Annuler</button>
+      <button class="btn btn-dark" type="button" [disabled]="pendingStatusProductId !== null" (click)="confirmStatusChange()">
+        <span *ngIf="pendingStatusProductId !== null" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        {{ confirmation.action === 'activate' ? 'Activer' : 'Désactiver' }}
+      </button>
+    </div>
+  </section>
+</div>
+
+<div *ngIf="stockProduct as product" class="admin-products__modal-backdrop" role="presentation">
+  <section class="admin-products__modal admin-products__modal--stock" role="dialog" aria-modal="true" aria-labelledby="stock-modal-title">
+    <h2 id="stock-modal-title">Modifier le stock</h2>
+    <p>Renseignez les quantités par taille pour « {{ product.name }} ».</p>
+
+    <div *ngIf="product.stock.length > 0; else noStockSizes" class="admin-products__stock-fields">
+      <label *ngFor="let stock of product.stock" class="admin-products__stock-field">
+        <span>{{ stock.size }}</span>
+        <input type="number" min="0" step="1" inputmode="numeric" [value]="stockQuantities[stock.size]" [disabled]="isSavingStock" (input)="updateStockQuantity(stock.size, $event)" />
+        <small>Actuel : {{ stock.quantity ?? 0 }}</small>
+      </label>
+    </div>
+    <ng-template #noStockSizes><p class="admin-products__modal-error">Aucune taille de stock n’est disponible pour ce produit.</p></ng-template>
+
+    <p *ngIf="product.stock.length > 0 && !isStockFormValid" class="admin-products__field-help" role="alert">Chaque quantité doit être un entier positif ou nul.</p>
+    <p *ngIf="stockErrorMessage" class="admin-products__modal-error" role="alert">{{ stockErrorMessage }}</p>
+    <div class="admin-products__modal-actions">
+      <button class="btn btn-outline-secondary" type="button" [disabled]="isSavingStock" (click)="closeStockModal()">Annuler</button>
+      <button class="btn btn-dark" type="button" [disabled]="!isStockFormValid || !hasStockChanges || isSavingStock" (click)="saveStock()">
+        <span *ngIf="isSavingStock" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        Enregistrer
+      </button>
+    </div>
+  </section>
+</div>
