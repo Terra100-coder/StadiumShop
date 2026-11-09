@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../../environment';
-import { Product, ProductStockSize } from '../models/product.model';
+import { Category, CreateProductRequest, Product, ProductStockSize, Team } from '../models/product.model';
 
 export interface StockUpdateRequest {
   size: string;
@@ -26,5 +26,17 @@ export class AdminProductService {
 
   updateStock(id: number, request: StockUpdateRequest): Observable<ProductStockSize> {
     return this.http.patch<ProductStockSize>(`${environment.apiUrl}/admin/products/${id}/stock`, request);
+  }
+
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${environment.apiUrl}/categories`);
+  }
+
+  getTeams(): Observable<Team[]> {
+    return this.http.get<Team[]>(`${environment.apiUrl}/teams`);
+  }
+
+  createProduct(request: CreateProductRequest): Observable<Product> {
+    return this.http.post<Product>(`${environment.apiUrl}/admin/products`, request);
   }
 }

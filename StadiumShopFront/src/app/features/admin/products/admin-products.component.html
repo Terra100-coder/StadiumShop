@@ -5,7 +5,10 @@
       <h1>Produits</h1>
       <p>Consultez l’état actuel de votre catalogue et de ses disponibilités.</p>
     </div>
-    <span *ngIf="!isLoading && !errorMessage" class="admin-products__count">{{ products.length }} produit{{ products.length > 1 ? 's' : '' }}</span>
+    <div class="admin-products__header-actions">
+      <span *ngIf="!isLoading && !errorMessage" class="admin-products__count">{{ products.length }} produit{{ products.length > 1 ? 's' : '' }}</span>
+      <a class="btn btn-dark admin-products__create" routerLink="/admin/products/new"><i class="pi pi-plus" aria-hidden="true"></i> Ajouter un produit</a>
+    </div>
   </header>
 
   <div *ngIf="actionFeedbackMessage" class="alert alert-success admin-products__feedback" role="status">

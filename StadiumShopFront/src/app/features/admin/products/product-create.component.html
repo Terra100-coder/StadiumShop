@@ -1,0 +1,120 @@
+<section class="product-create">
+  <header class="product-create__header">
+    <div>
+      <p class="product-create__eyebrow">Catalogue</p>
+      <h1>Ajouter un produit</h1>
+      <p>Créez une nouvelle référence et renseignez ses disponibilités par taille.</p>
+    </div>
+    <a class="btn btn-outline-secondary" routerLink="/admin/products">Annuler</a>
+  </header>
+
+  <div *ngIf="isLoadingOptions" class="product-create__loading" role="status">
+    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Chargement des catégories et des équipes…
+  </div>
+
+  <div *ngIf="optionsErrorMessage" class="alert alert-danger product-create__alert" role="alert">
+    <span>{{ optionsErrorMessage }}</span>
+    <button type="button" class="btn btn-sm btn-outline-danger" (click)="loadOptions()">Réessayer</button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div *ngIf="submitErrorMessage" class="alert alert-danger product-create__alert" role="alert">{{ submitErrorMessage }}</div>
+
+    <div class="product-create__grid">
+      <section class="product-create__card product-create__card--wide">
+        <h2>Informations produit</h2>
+        <div class="product-create__fields product-create__fields--two-columns">
+          <label class="product-create__field product-create__field--full">
+            <span>Nom du produit <b aria-hidden="true">*</b></span>
+            <input class="form-control" type="text" formControlName="name" maxlength="150" [class.is-invalid]="isInvalid('name')" />
+            <small *ngIf="isInvalid('name')">Le nom est obligatoire et ne peut pas dépasser 150 caractères.</small>
+          </label>
+          <label class="product-create__field product-create__field--full">
+            <span>Description</span>
+            <textarea class="form-control" rows="4" formControlName="description"></textarea>
+          </label>
+          <label class="product-create__field">
+            <span>Prix normal <b aria-hidden="true">*</b></span>
+            <input class="form-control" type="number" min="0.01" step="0.01" formControlName="price" [class.is-invalid]="isInvalid('price')" />
+            <small *ngIf="isInvalid('price')">Saisissez un prix strictement positif.</small>
+          </label>
+          <label class="product-create__field">
+            <span>Prix promotionnel</span>
+            <input class="form-control" type="number" min="0.01" step="0.01" formControlName="promoPrice" [class.is-invalid]="isInvalid('promoPrice') || (form.hasError('promoNotBelowPrice') && form.controls.promoPrice.touched)" />
+            <small *ngIf="isInvalid('promoPrice')">Saisissez un prix promotionnel strictement positif.</small>
+            <small *ngIf="form.hasError('promoNotBelowPrice') && form.controls.promoPrice.touched">Le prix promotionnel doit être inférieur au prix normal.</small>
+          </label>
+        </div>
+      </section>
+
+      <section class="product-create__card">
+        <h2>Classement</h2>
+        <div class="product-create__fields">
+          <label class="product-create__field">
+            <span>Catégorie <b aria-hidden="true">*</b></span>
+            <select class="form-select" formControlName="categoryId" [class.is-invalid]="isInvalid('categoryId')" [disabled]="isLoadingOptions || !!optionsErrorMessage">
+              <option [ngValue]="null">Sélectionnez une catégorie</option>
+              <option *ngFor="let category of categories" [ngValue]="category.id">{{ category.name }}</option>
+            </select>
+            <small *ngIf="isInvalid('categoryId')">Sélectionnez une catégorie.</small>
+          </label>
+          <label class="product-create__field">
+            <span>Équipe <b aria-hidden="true">*</b></span>
+            <select class="form-select" formControlName="teamId" [class.is-invalid]="isInvalid('teamId')" [disabled]="isLoadingOptions || !!optionsErrorMessage">
+              <option [ngValue]="null">Sélectionnez une équipe</option>
+              <option *ngFor="let team of teams" [ngValue]="team.id">{{ team.name }}<ng-container *ngIf="team.country"> — {{ team.country }}</ng-container></option>
+            </select>
+            <small *ngIf="isInvalid('teamId')">Sélectionnez une équipe.</small>
+          </label>
+        </div>
+      </section>
+
+      <section class="product-create__card">
+        <h2>Publication</h2>
+        <div class="product-create__toggles">
+          <label><input type="checkbox" formControlName="personalizable" /> <span><strong>Produit personnalisable</strong><small>Le client pourra ajouter un nom et un numéro.</small></span></label>
+          <label><input type="checkbox" formControlName="active" /> <span><strong>Produit actif</strong><small>Visible dans le catalogue dès sa création.</small></span></label>
+        </div>
+      </section>
+
+      <section class="product-create__card product-create__card--wide">
+        <h2>Images</h2>
+        <div class="product-create__fields">
+          <label class="product-create__field">
+            <span>URL de l’image principale <b aria-hidden="true">*</b></span>
+            <input class="form-control" type="url" placeholder="https://…" formControlName="mainImage" [class.is-invalid]="isInvalid('mainImage')" />
+            <small *ngIf="isInvalid('mainImage')">Indiquez une URL valide pour l’image principale.</small>
+          </label>
+          <div class="product-create__gallery" formArrayName="gallery">
+            <div class="product-create__gallery-heading"><span>Galerie d’images</span><button class="btn btn-sm btn-outline-dark" type="button" (click)="addGalleryImage()"><i class="pi pi-plus" aria-hidden="true"></i> Ajouter une image</button></div>
+            <div *ngFor="let image of gallery.controls; let index = index" class="product-create__gallery-row">
+              <input class="form-control" type="url" placeholder="https://…" [formControlName]="index" [class.is-invalid]="image.invalid && (image.touched || image.dirty)" />
+              <button class="btn btn-outline-danger" type="button" [attr.aria-label]="'Supprimer l’image ' + (index + 1)" (click)="removeGalleryImage(index)"><i class="pi pi-trash" aria-hidden="true"></i></button>
+              <small *ngIf="image.invalid && (image.touched || image.dirty)">Indiquez une URL valide.</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="product-create__card product-create__card--wide">
+        <h2>Stock par taille</h2>
+        <p class="product-create__hint">Chaque quantité doit être un entier positif ou nul.</p>
+        <div class="product-create__stock" formArrayName="stock">
+          <label *ngFor="let stockControl of stock.controls; let index = index" class="product-create__stock-field" [formGroupName]="index">
+            <span>{{ sizes[index] }}</span>
+            <input class="form-control" type="number" min="0" step="1" inputmode="numeric" formControlName="quantity" [class.is-invalid]="isInvalid('stock.' + index + '.quantity')" />
+            <small *ngIf="isInvalid('stock.' + index + '.quantity')">Entier ≥ 0 requis.</small>
+          </label>
+        </div>
+      </section>
+    </div>
+
+    <footer class="product-create__actions">
+      <a class="btn btn-outline-secondary" routerLink="/admin/products" [class.disabled]="isSubmitting">Annuler</a>
+      <button class="btn btn-dark" type="submit" [disabled]="isSubmitting || isLoadingOptions || !!optionsErrorMessage">
+        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        {{ isSubmitting ? 'Enregistrement…' : 'Enregistrer le produit' }}
+      </button>
+    </footer>
+  </form>
+</section>

@@ -27,6 +27,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'products/new',
+        loadComponent: () =>
+          import('./features/admin/products/product-create.component').then(
+            (component) => component.ProductCreateComponent
+          ),
+      },
+      {
         path: 'products',
         loadComponent: () =>
           import('./features/admin/products/admin-products.component').then(

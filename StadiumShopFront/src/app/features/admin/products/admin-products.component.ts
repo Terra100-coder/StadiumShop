@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 import { Product } from '../../../core/models/product.model';
@@ -18,7 +19,7 @@ interface StatusConfirmation {
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './admin-products.component.html',
   styleUrl: './admin-products.component.css',
 })

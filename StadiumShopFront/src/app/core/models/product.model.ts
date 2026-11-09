@@ -21,3 +21,30 @@ export interface Product {
   teamName: string;
   stock: ProductStockSize[];
 }
+
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface Team {
+  id: number;
+  name: string;
+  type: 'CLUB' | 'NATIONAL_TEAM';
+  country: string;
+}
+
+export interface CreateProductRequest {
+  name: string;
+  description: string;
+  price: number;
+  promoPrice?: number;
+  mainImage: string;
+  gallery: string[];
+  personalizable: boolean;
+  active: boolean;
+  categoryId: number;
+  teamId: number;
+  stock: Array<{ size: string; quantity: number }>;
+}
