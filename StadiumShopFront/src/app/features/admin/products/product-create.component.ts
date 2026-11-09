@@ -28,20 +28,21 @@ const promoBelowPrice: ValidatorFn = (control: AbstractControl): ValidationError
   styleUrl: './product-create.component.css',
 })
 export class ProductCreateComponent implements OnInit {
-  private readonly fb = inject(FormBuilder);
-  private readonly adminProductService = inject(AdminProductService);
-  private readonly router = inject(Router);
+  protected readonly fb = inject(FormBuilder);
+  protected readonly adminProductService = inject(AdminProductService);
+  protected readonly router = inject(Router);
 
   readonly sizes = sizes;
+  isEditMode = false;
   readonly form = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(150)]],
     description: [''],
-    price: [null, [Validators.required, Validators.min(0.0000001)]],
-    promoPrice: [null, [Validators.min(0.0000001)]],
+    price: this.fb.control<number | null>(null, [Validators.required, Validators.min(0.0000001)]),
+    promoPrice: this.fb.control<number | null>(null, [Validators.min(0.0000001)]),
     mainImage: ['', [Validators.required, Validators.pattern(urlPattern)]],
     gallery: this.fb.array([]),
-    categoryId: [null, Validators.required],
-    teamId: [null, Validators.required],
+    categoryId: this.fb.control<number | null>(null, Validators.required),
+    teamId: this.fb.control<number | null>(null, Validators.required),
     personalizable: [false],
     active: [true],
     stock: this.fb.array(sizes.map((size) => this.fb.group({
@@ -69,7 +70,7 @@ export class ProductCreateComponent implements OnInit {
     this.loadOptions();
   }
 
-  loadOptions(): void {
+  protected loadOptions(): void {
     this.isLoadingOptions = true;
     this.optionsErrorMessage = '';
 
@@ -109,23 +110,7 @@ export class ProductCreateComponent implements OnInit {
       return;
     }
 
-    const value = this.form.getRawValue();
-    const stock = value.stock
-      .map((item) => ({ size: item.size ?? '', quantity: Number(item.quantity) }))
-      .filter((item, index, items) => item.size && items.findIndex((candidate) => candidate.size === item.size) === index);
-    const request: CreateProductRequest = {
-      name: value.name!.trim(),
-      description: value.description?.trim() ?? '',
-      price: Number(value.price),
-      ...(value.promoPrice !== null && value.promoPrice !== '' ? { promoPrice: Number(value.promoPrice) } : {}),
-      mainImage: value.mainImage!.trim(),
-      gallery: (value.gallery as string[]).map((url) => url.trim()),
-      personalizable: Boolean(value.personalizable),
-      active: Boolean(value.active),
-      categoryId: Number(value.categoryId),
-      teamId: Number(value.teamId),
-      stock,
-    };
+    const request = this.buildRequest();
 
     this.isSubmitting = true;
     this.submitErrorMessage = '';
@@ -138,12 +123,33 @@ export class ProductCreateComponent implements OnInit {
     });
   }
 
+  protected buildRequest(): CreateProductRequest {
+    const value = this.form.getRawValue();
+    const stock = value.stock
+      .map((item) => ({ size: item.size ?? '', quantity: Number(item.quantity) }))
+      .filter((item, index, items) => item.size && items.findIndex((candidate) => candidate.size === item.size) === index);
+
+    return {
+      name: value.name!.trim(),
+      description: value.description?.trim() ?? '',
+      price: Number(value.price),
+      ...(value.promoPrice !== null ? { promoPrice: Number(value.promoPrice) } : {}),
+      mainImage: value.mainImage!.trim(),
+      gallery: (value.gallery as string[]).map((url) => url.trim()),
+      personalizable: Boolean(value.personalizable),
+      active: Boolean(value.active),
+      categoryId: Number(value.categoryId),
+      teamId: Number(value.teamId),
+      stock,
+    };
+  }
+
   isInvalid(path: string): boolean {
     const control = this.form.get(path);
     return !!control && control.invalid && (control.touched || control.dirty);
   }
 
-  private getSubmitErrorMessage(error: HttpErrorResponse): string {
+  protected getSubmitErrorMessage(error: HttpErrorResponse): string {
     if (error.status === 0) return 'Impossible de contacter le serveur. Vérifiez votre connexion puis réessayez.';
     if (error.status === 401) return 'Votre session a expiré. Veuillez vous reconnecter.';
     if (error.status === 403) return 'Vous ne disposez pas des droits nécessaires pour créer un produit.';

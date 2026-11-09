@@ -34,6 +34,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'products/:id/edit',
+        loadComponent: () =>
+          import('./features/admin/products/product-edit.component').then(
+            (component) => component.ProductEditComponent
+          ),
+      },
+      {
         path: 'products',
         loadComponent: () =>
           import('./features/admin/products/admin-products.component').then(

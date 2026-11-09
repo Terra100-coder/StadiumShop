@@ -99,11 +99,16 @@
             <td>{{ product.createdAt ? (product.createdAt | date : 'dd/MM/yyyy') : '—' }}</td>
             <td>
               <div class="admin-products__actions">
+                <a class="btn btn-sm btn-outline-dark" [routerLink]="['/admin/products', product.id, 'edit']">Modifier</a>
                 <button class="btn btn-sm" type="button" [class.btn-outline-success]="!product.active" [class.btn-outline-secondary]="product.active" [disabled]="isStatusActionPending(product)" (click)="requestStatusChange(product)">
                   <span *ngIf="isStatusActionPending(product)" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                   {{ product.active ? 'Désactiver' : 'Activer' }}
                 </button>
                 <button class="btn btn-sm btn-outline-dark" type="button" (click)="openStockModal(product)">Modifier le stock</button>
+                <button class="btn btn-sm btn-outline-danger" type="button" [disabled]="isDeletionPending(product)" (click)="requestDeletion(product)">
+                  <span *ngIf="isDeletionPending(product)" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  Supprimer
+                </button>
               </div>
             </td>
           </tr>
@@ -123,6 +128,25 @@
       <button class="btn btn-dark" type="button" [disabled]="pendingStatusProductId !== null" (click)="confirmStatusChange()">
         <span *ngIf="pendingStatusProductId !== null" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
         {{ confirmation.action === 'activate' ? 'Activer' : 'Désactiver' }}
+      </button>
+    </div>
+  </section>
+</div>
+
+<div *ngIf="deleteConfirmation as product" class="admin-products__modal-backdrop" role="presentation">
+  <section class="admin-products__modal admin-products__modal--delete" role="dialog" aria-modal="true" aria-labelledby="delete-confirmation-title">
+    <h2 id="delete-confirmation-title">Supprimer le produit</h2>
+    <p>Voulez-vous supprimer définitivement « {{ product.name }} » ? Cette action est irréversible.</p>
+    <p *ngIf="deleteErrorMessage" class="admin-products__modal-error" role="alert">{{ deleteErrorMessage }}</p>
+    <div *ngIf="deleteConflict && product.active" class="admin-products__delete-alternative">
+      <p>Le produit peut rester lié à ses commandes tout en étant retiré du catalogue.</p>
+      <button class="btn btn-outline-secondary" type="button" [disabled]="deletingProductId !== null" (click)="requestDeactivationAfterDeleteConflict()">Demander la désactivation</button>
+    </div>
+    <div class="admin-products__modal-actions">
+      <button class="btn btn-outline-secondary" type="button" [disabled]="deletingProductId !== null" (click)="closeDeleteConfirmation()">Annuler</button>
+      <button class="btn btn-danger" type="button" [disabled]="deletingProductId !== null || deleteConflict" (click)="confirmDeletion()">
+        <span *ngIf="deletingProductId !== null" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        Confirmer la suppression
       </button>
     </div>
   </section>

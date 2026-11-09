@@ -39,4 +39,12 @@ export class AdminProductService {
   createProduct(request: CreateProductRequest): Observable<Product> {
     return this.http.post<Product>(`${environment.apiUrl}/admin/products`, request);
   }
+
+  updateProduct(id: number, request: CreateProductRequest): Observable<Product> {
+    return this.http.put<Product>(`${environment.apiUrl}/admin/products/${id}`, request);
+  }
+
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/admin/products/${id}`);
+  }
 }

@@ -2,7 +2,7 @@
   <header class="product-create__header">
     <div>
       <p class="product-create__eyebrow">Catalogue</p>
-      <h1>Ajouter un produit</h1>
+      <h1>{{ isEditMode ? 'Modifier le produit' : 'Ajouter un produit' }}</h1>
       <p>Créez une nouvelle référence et renseignez ses disponibilités par taille.</p>
     </div>
     <a class="btn btn-outline-secondary" routerLink="/admin/products">Annuler</a>
@@ -101,7 +101,7 @@
         <p class="product-create__hint">Chaque quantité doit être un entier positif ou nul.</p>
         <div class="product-create__stock" formArrayName="stock">
           <label *ngFor="let stockControl of stock.controls; let index = index" class="product-create__stock-field" [formGroupName]="index">
-            <span>{{ sizes[index] }}</span>
+            <span>{{ stockControl.get('size')?.value }}</span>
             <input class="form-control" type="number" min="0" step="1" inputmode="numeric" formControlName="quantity" [class.is-invalid]="isInvalid('stock.' + index + '.quantity')" />
             <small *ngIf="isInvalid('stock.' + index + '.quantity')">Entier ≥ 0 requis.</small>
           </label>
@@ -113,7 +113,7 @@
       <a class="btn btn-outline-secondary" routerLink="/admin/products" [class.disabled]="isSubmitting">Annuler</a>
       <button class="btn btn-dark" type="submit" [disabled]="isSubmitting || isLoadingOptions || !!optionsErrorMessage">
         <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-        {{ isSubmitting ? 'Enregistrement…' : 'Enregistrer le produit' }}
+        {{ isSubmitting ? 'Enregistrement…' : (isEditMode ? 'Enregistrer les modifications' : 'Enregistrer le produit') }}
       </button>
     </footer>
   </form>

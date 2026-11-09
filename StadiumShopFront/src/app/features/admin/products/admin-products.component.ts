@@ -43,6 +43,10 @@ export class AdminProductsComponent implements OnInit {
   initialStockQuantities: Record<string, number | null> = {};
   stockErrorMessage = '';
   isSavingStock = false;
+  deleteConfirmation: Product | null = null;
+  deleteErrorMessage = '';
+  deletingProductId: number | null = null;
+  deleteConflict = false;
 
   ngOnInit(): void {
     this.loadProducts();
@@ -145,6 +149,62 @@ export class AdminProductsComponent implements OnInit {
     }
   }
 
+  requestDeletion(product: Product): void {
+    if (this.deletingProductId !== null) {
+      return;
+    }
+
+    this.actionFeedbackMessage = '';
+    this.actionErrorMessage = '';
+    this.deleteErrorMessage = '';
+    this.deleteConflict = false;
+    this.deleteConfirmation = product;
+  }
+
+  closeDeleteConfirmation(): void {
+    if (this.deletingProductId === null) {
+      this.deleteConfirmation = null;
+      this.deleteErrorMessage = '';
+      this.deleteConflict = false;
+    }
+  }
+
+  confirmDeletion(): void {
+    const product = this.deleteConfirmation;
+
+    if (!product || this.deletingProductId !== null) {
+      return;
+    }
+
+    this.deletingProductId = product.id;
+    this.deleteErrorMessage = '';
+    this.deleteConflict = false;
+    this.adminProductService.deleteProduct(product.id).subscribe({
+      next: () => {
+        this.deletingProductId = null;
+        this.deleteConfirmation = null;
+        this.actionFeedbackMessage = `Produit supprimé : ${product.name}.`;
+        this.refreshProductsAfterAction();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.deletingProductId = null;
+        this.deleteConflict = error.status === 409;
+        this.deleteErrorMessage = this.getDeleteErrorMessage(error);
+      },
+    });
+  }
+
+  requestDeactivationAfterDeleteConflict(): void {
+    const product = this.deleteConfirmation;
+
+    if (!product || !product.active || this.deletingProductId !== null) {
+      return;
+    }
+
+    this.closeDeleteConfirmation();
+    this.requestStatusChange(product);
+  }
+
   updateStockQuantity(size: string, event: Event): void {
     this.stockQuantities[size] = (event.target as HTMLInputElement).value;
   }
@@ -211,6 +271,10 @@ export class AdminProductsComponent implements OnInit {
     return this.pendingStatusProductId === product.id;
   }
 
+  isDeletionPending(product: Product): boolean {
+    return this.deletingProductId === product.id;
+  }
+
   private refreshProductsAfterAction(): void {
     this.productService.getProducts().subscribe({
       next: (products) => {
@@ -230,6 +294,15 @@ export class AdminProductsComponent implements OnInit {
 
     const quantity = Number(value);
     return Number.isSafeInteger(quantity) && quantity >= 0;
+  }
+
+  private getDeleteErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 0) return 'Suppression impossible : verifiez votre connexion puis reessayez.';
+    if (error.status === 401) return 'Suppression impossible : votre session a expire.';
+    if (error.status === 403) return 'Suppression impossible : droits administrateur insuffisants.';
+    if (error.status === 404) return 'Suppression impossible : le produit est introuvable.';
+    if (error.status === 409) return 'Ce produit est lie a des commandes et ne peut pas etre supprime. Desactivez-le a la place.';
+    return 'Suppression impossible pour le moment. Reessayez dans quelques instants.';
   }
 
   private getActionErrorMessage(error: HttpErrorResponse, action: string): string {

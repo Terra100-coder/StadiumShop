@@ -311,6 +311,22 @@
   width: min(100%, 38rem);
 }
 
+.admin-products__modal--delete {
+  border: 1px solid #f0c8cf;
+}
+
+.admin-products__delete-alternative {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #f8f8f8;
+}
+
+.admin-products__delete-alternative p {
+  margin-bottom: 0.75rem;
+  color: #555;
+}
+
 .admin-products__modal-actions {
   display: flex;
   justify-content: flex-end;
