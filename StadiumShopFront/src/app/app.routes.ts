@@ -50,10 +50,17 @@ export const routes: Routes = [
       {
         path: 'orders',
         loadComponent: () =>
+          import('./features/admin/orders/admin-orders.component').then(
+            (component) => component.AdminOrdersComponent
+          ),
+      },
+      {
+        path: 'orders/:id',
+        loadComponent: () =>
           import('./features/admin/section-placeholder/admin-section-placeholder.component').then(
             (component) => component.AdminSectionPlaceholderComponent
           ),
-        data: { title: 'Commandes' },
+        data: { title: 'Détail de la commande' },
       },
       {
         path: 'categories',
